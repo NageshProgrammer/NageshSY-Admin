@@ -29,16 +29,17 @@ export default function SupportTickets() {
     await load();
   };
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin text-[#fbbf24]" /></div>;
-  if (error || !payload) return <div className="p-8 text-red-500 text-sm font-bold text-center">{error || "No support data available"}</div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen bg-black/20 rounded-3xl"><Loader2 className="w-8 h-8 animate-spin text-[#fbbf24]" /></div>;
+  if (error || !payload) return <div className="p-8 text-red-400 text-sm font-bold text-center">{error || "No support data available"}</div>;
 
   return (
-    <div className="space-y-8 p-4 md:p-8">
+    <div className="space-y-8 p-4 md:p-8 bg-black/20 rounded-3xl">
       <ScrollReveal direction="down">
         <h1 className="text-3xl font-extrabold text-white tracking-tight">Support & Tickets</h1>
         <p className="text-sm text-zinc-400 mt-2 font-medium">Manage demo requests and contact form enquiries from one queue.</p>
       </ScrollReveal>
 
+      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <ScrollReveal direction="up" delay={0.1}>
           <Card className={glassCard}>
@@ -60,46 +61,75 @@ export default function SupportTickets() {
         </ScrollReveal>
       </div>
 
+      {/* Responsive Tickets Table */}
       <ScrollReveal direction="up" delay={0.4}>
-        <Card className={`${glassCard} !p-0 overflow-hidden`}>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
+        <Card className={`${glassCard} !p-0 bg-transparent md:bg-[#050505]/20 md:overflow-hidden border-0 md:border md:border-white/[0.08] shadow-none md:shadow-2xl`}>
+          <div className="md:overflow-x-auto">
+            <table className="w-full text-sm block md:table">
+              
+              <thead className="hidden md:table-header-group">
                 <tr className="border-b border-white/[0.08] bg-white/[0.02]">
-                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Source</th>
-                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Email</th>
-                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Company</th>
-                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Industry</th>
-                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Created</th>
-                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Status</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest whitespace-nowrap">Source</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest whitespace-nowrap">Email</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest whitespace-nowrap">Company</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest whitespace-nowrap">Industry</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest whitespace-nowrap">Created</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest whitespace-nowrap">Status</th>
                 </tr>
               </thead>
-              <tbody>
+              
+              <tbody className="block md:table-row-group">
+                {sortedTickets.length === 0 && (
+                  <tr className="block md:table-row"><td colSpan={6} className="py-16 text-center text-zinc-500 font-medium block md:table-cell">No tickets found.</td></tr>
+                )}
                 {sortedTickets.map((ticket) => (
-                  <tr key={ticket.id} className="border-b border-white/[0.05] hover:bg-white/[0.02] transition-colors">
-                    <td className="py-4 px-6">
-                      <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md bg-white/[0.05] border border-white/[0.1] text-white">
+                  <tr key={ticket.id} className="block md:table-row bg-white/[0.02] md:bg-transparent border border-white/[0.05] md:border-0 md:border-b md:border-white/[0.05] rounded-2xl md:rounded-none mb-4 md:mb-0 p-5 md:p-0 hover:bg-white/[0.04] md:hover:bg-white/[0.02] transition-colors group">
+                    
+                    <td className="flex justify-between items-center md:table-cell py-2 md:py-4 px-0 md:px-6 border-b border-white/[0.05] md:border-0">
+                      <span className="md:hidden text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Source</span>
+                      <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md bg-white/[0.05] border border-white/[0.1] text-white md:ml-0 ml-auto">
                         {ticket.source === "demo_request" ? "Demo" : "Contact"}
                       </span>
                     </td>
-                    <td className="py-4 px-6 font-bold text-white">{ticket.email}</td>
-                    <td className="py-4 px-6 text-zinc-400 font-medium">{ticket.company || "-"}</td>
-                    <td className="py-4 px-6 text-zinc-400 font-medium">{ticket.industry || "-"}</td>
-                    <td className="py-4 px-6 text-zinc-400 font-medium">{new Date(ticket.createdAt).toLocaleString()}</td>
-                    <td className="py-4 px-6">
-                      <Select value={ticket.status} onValueChange={(status) => updateStatus(ticket, status)}>
-                        <SelectTrigger className="h-10 text-xs w-[140px] bg-white/[0.02] border-white/[0.08] text-white rounded-xl font-bold uppercase tracking-wider">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-zinc-950 border-white/[0.1] text-white rounded-xl">
-                          {STATUSES.map((status) => (
-                            <SelectItem key={status} value={status} className="font-bold uppercase tracking-wider text-xs">
-                              {status.replace("_", " ")}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+
+                    <td className="flex justify-between items-center md:table-cell py-3 md:py-4 px-0 md:px-6 border-b border-white/[0.05] md:border-0">
+                      <span className="md:hidden text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest shrink-0">Email</span>
+                      <span className="font-bold text-white text-right md:text-left truncate ml-4 md:ml-0">{ticket.email}</span>
                     </td>
+
+                    <td className="flex justify-between items-center md:table-cell py-3 md:py-4 px-0 md:px-6 border-b border-white/[0.05] md:border-0">
+                      <span className="md:hidden text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest shrink-0">Company</span>
+                      <span className="text-zinc-400 font-medium text-right md:text-left truncate ml-4 md:ml-0">{ticket.company || "-"}</span>
+                    </td>
+
+                    <td className="flex justify-between items-center md:table-cell py-3 md:py-4 px-0 md:px-6 border-b border-white/[0.05] md:border-0">
+                      <span className="md:hidden text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest shrink-0">Industry</span>
+                      <span className="text-zinc-400 font-medium text-right md:text-left truncate ml-4 md:ml-0">{ticket.industry || "-"}</span>
+                    </td>
+
+                    <td className="flex justify-between items-center md:table-cell py-3 md:py-4 px-0 md:px-6 border-b border-white/[0.05] md:border-0">
+                      <span className="md:hidden text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Created</span>
+                      <span className="text-zinc-400 font-medium text-right md:text-left">{new Date(ticket.createdAt).toLocaleString()}</span>
+                    </td>
+
+                    <td className="flex justify-between items-center md:table-cell pt-4 pb-1 md:py-4 px-0 md:px-6">
+                      <span className="md:hidden text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest">Status</span>
+                      <div className="md:text-left text-right">
+                        <Select value={ticket.status} onValueChange={(status) => updateStatus(ticket, status)}>
+                          <SelectTrigger className="h-10 text-xs w-[140px] bg-white/[0.02] border-white/[0.08] text-white rounded-xl font-bold uppercase tracking-wider focus:ring-[#fbbf24]/50 focus:ring-offset-0 outline-none">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-zinc-950 border-white/[0.1] text-white rounded-xl">
+                            {STATUSES.map((status) => (
+                              <SelectItem key={status} value={status} className="font-bold uppercase tracking-wider text-xs">
+                                {status.replace("_", " ")}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </td>
+
                   </tr>
                 ))}
               </tbody>

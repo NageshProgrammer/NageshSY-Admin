@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==================================================
+   LEADEQUATOR – BLACK & GOLD ADMIN THEME
+   ================================================== */
+@layer base {
+  :root {
+    --background: 0 0% 9%;
+    --foreground: 0 0% 92%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 92%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 92%;
+
+    /* Brand Gold */
+    --primary: 42 100% 55%;
+    --primary-foreground: 0 0% 5%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 85%;
+
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 42 100% 55%;
+    --accent-foreground: 0 0% 5%;
+
+    --destructive: 0 72% 52%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 42 100% 55%;
+
+    --radius: 10px; /* rectangle, not pill */
+  }
+}
+
+/* ==================================================
+   BASE STYLES
+   ================================================== */
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background:
+      radial-gradient(
+        900px 500px at 50% -200px,
+        hsl(42 100% 55% / 0.08),
+        transparent 60%
+      ),
+      hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* ==================================================
+   ADMIN UTILITIES
+   ================================================== */
+@layer utilities {
+  .le-card {
+    background: linear-gradient(
+      180deg,
+      hsl(0 0% 7%),
+      hsl(0 0% 5%)
+    );
+    border: 1px solid hsl(var(--border));
+    box-shadow:
+      0 0 0 1px hsl(42 100% 55% / 0.05),
+      0 20px 40px rgba(0, 0, 0, 0.7);
+    border-radius: var(--radius);
+  }
+
+  .le-gold-text {
+    background: linear-gradient(
+      90deg,
+      hsl(42 100% 60%),
+      hsl(35 100% 50%)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

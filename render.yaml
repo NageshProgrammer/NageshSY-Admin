@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: leadequator-admin
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEON_DATABASE_URL
+        sync: false  # Set this in Render dashboard
+    healthCheckPath: /health
